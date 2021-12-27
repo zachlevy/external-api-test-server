@@ -88,6 +88,10 @@ app.all('/responses/redirects/:redirectCount', (req, res) => {
   res.status(200).send();
 });
 
+app.all('/responses/file-download', (req, res) => {
+  res.status(200).download('files/sample.png');
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
