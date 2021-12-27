@@ -1,14 +1,30 @@
 const express = require('express');
 const fs = require('fs');
+const lodash = require('lodash');
 const xmlConvert = require('xml-js');
 const app = express();
 const port = 6000;
+
+function rawBodyMiddleware(req, res, next) {
+  req.rawBody = null;
+  req.on('data', function(chunk) {
+    if (req.rawBody === null && !lodash.isUndefined(chunk)) {
+      req.rawBody = '';
+    }
+    req.rawBody += chunk;
+  });
+  next();
+}
+
+app.use(rawBodyMiddleware);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 function getDebugRequest(req) {
   const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
   return {
     headers: req.rawHeaders,
-    ...(req.body && { body: req.rawBody.toString('utf8') }),
+    body: req.rawBody,
     httpMethod: req.method,
     url
   };
