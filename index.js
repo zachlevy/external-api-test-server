@@ -71,6 +71,11 @@ app.all('/responses/long', (req, res) => {
   }, duration);
 });
 
+app.all('/responses/socket-hangup', (req, res) => {
+  res.write('partial response');
+  res.destroy();
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
