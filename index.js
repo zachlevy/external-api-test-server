@@ -9,6 +9,7 @@ function getDebugRequest(req) {
   return {
     headers: req.rawHeaders,
     ...(req.body && { body: req.rawBody.toString('utf8') }),
+    httpMethod: req.method,
     url
   };
 }
@@ -18,7 +19,7 @@ app.get('/', (req, res) => {
   res.status(200).send(content);
 });
 
-app.get('/responses/:statusCode.json', (req, res) => {
+app.all('/responses/:statusCode.json', (req, res) => {
   const responseBody = {
     request: getDebugRequest(req)
   };
@@ -26,7 +27,7 @@ app.get('/responses/:statusCode.json', (req, res) => {
   res.status(statusCode).send(responseBody);
 });
 
-app.get('/responses/:statusCode.xml', (req, res) => {
+app.all('/responses/:statusCode.xml', (req, res) => {
   const responseBody = {
     request: getDebugRequest(req)
   };
