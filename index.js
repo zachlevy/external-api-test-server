@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
   res.status(200).send(content);
 });
 
-app.all('/responses/:statusCode.json', (req, res) => {
+app.all('/responses/status-code/:statusCode.json', (req, res) => {
   const responseBody = {
     request: getDebugRequest(req)
   };
@@ -43,7 +43,7 @@ app.all('/responses/:statusCode.json', (req, res) => {
   res.status(statusCode).send(responseBody);
 });
 
-app.all('/responses/:statusCode.xml', (req, res) => {
+app.all('/responses/status-code/:statusCode.xml', (req, res) => {
   const responseBody = {
     request: getDebugRequest(req)
   };
