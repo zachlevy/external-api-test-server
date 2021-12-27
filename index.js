@@ -3,7 +3,7 @@ const fs = require('fs');
 const lodash = require('lodash');
 const xmlConvert = require('xml-js');
 const app = express();
-const port = 6000;
+const port = process.env.PORT || 6000;
 
 function rawBodyMiddleware(req, res, next) {
   req.rawBody = null;
