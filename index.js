@@ -54,6 +54,10 @@ app.all('/responses/status-code/:statusCode.xml', (req, res) => {
   res.status(statusCode).send(xmlResponseBody);
 });
 
+app.all('/responses/none', (/* req, res */) => {
+  return;
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
