@@ -76,6 +76,18 @@ app.all('/responses/socket-hangup', (req, res) => {
   res.destroy();
 });
 
+app.all('/responses/redirects/:redirectCount', (req, res) => {
+  if (req.params.redirectCount) {
+    const parsedRedirectCount = parseInt(req.params.redirectCount);
+    if (parsedRedirectCount > 0) {
+      const newRedirectCount = parsedRedirectCount - 1;
+      res.redirect(`/responses/redirects/${newRedirectCount}`);
+      return;
+    }
+  }
+  res.status(200).send();
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
