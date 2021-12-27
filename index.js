@@ -58,6 +58,19 @@ app.all('/responses/none', (/* req, res */) => {
   return;
 });
 
+app.all('/responses/long', (req, res) => {
+  let duration = 10 * 1000; // 10 seconds
+  console.log({
+    'req.body': req.body
+  });
+  if (req.body && req.body.duration) {
+    duration = req.body.duration;
+  }
+  setTimeout(() => {
+    res.status(200).send();
+  }, duration);
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
