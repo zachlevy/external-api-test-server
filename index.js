@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const xmlConvert = require('xml-js');
 const app = express();
 const port = 6000;
 
@@ -24,6 +25,17 @@ app.get('/responses/:statusCode.json', (req, res) => {
   const statusCode = req.params.statusCode;
   res.status(statusCode).send(responseBody);
 });
+
+app.get('/responses/:statusCode.xml', (req, res) => {
+  const responseBody = {
+    request: getDebugRequest(req)
+  };
+  const statusCode = req.params.statusCode;
+  res.set('Content-Type', 'text/xml');
+  const xmlResponseBody = xmlConvert.json2xml(responseBody, {compact: true});
+  res.status(statusCode).send(xmlResponseBody);
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
