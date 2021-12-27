@@ -33,6 +33,7 @@ app.all('/responses/:statusCode.xml', (req, res) => {
   };
   const statusCode = req.params.statusCode;
   res.set('Content-Type', 'text/xml');
+  // TODO there's a bug where the url is being stripped
   const xmlResponseBody = xmlConvert.json2xml(responseBody, {compact: true});
   res.status(statusCode).send(xmlResponseBody);
 });
