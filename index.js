@@ -85,9 +85,6 @@ app.all('/responses/none', (/* req, res */) => {
 app.all('/responses/long', (req, res) => {
   const startedAt = new Date();
   let duration = 10 * 1000; // 10 seconds
-  console.log({
-    'req.body': req.body
-  });
   if (req.body && req.body.duration) {
     duration = req.body.duration;
   }
@@ -112,6 +109,7 @@ app.all('/responses/redirects/:redirectCount', (req, res) => {
     const parsedRedirectCount = parseInt(req.params.redirectCount);
     if (parsedRedirectCount > 0) {
       const newRedirectCount = parsedRedirectCount - 1;
+      // recursively redirect
       res.redirect(`/responses/redirects/${newRedirectCount}`);
       return;
     }
