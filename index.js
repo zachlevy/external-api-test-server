@@ -24,10 +24,25 @@ app.use(rawBodyMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+function getHeaderTuples(rawHeaders) {
+  // rawHeaders are an array of both header names and values
+  // even indexed rawHeaders are names, and odd are values
+  // convert this to an arry of tuples like [headerName, headerValue]
+  // do this to preserve any duplicates rather than losing duplicates in a map
+  const headerTuples = [];
+  rawHeaders.forEach((rawHeader, index) => {
+    const headerTupleIndex = Math.floor(index / 2);
+    if (!headerTuples[headerTupleIndex]) {
+      headerTuples[headerTupleIndex] = [];
+    }
+    headerTuples[headerTupleIndex].push(rawHeader);
+  });
+}
+
 function getDebugRequest(req) {
   const url = new URL(`${req.secure ? 'https' : 'http'}://${req.get('host')}${req.originalUrl}`);
   return {
-    headers: req.rawHeaders,
+    headers: getHeaderTuples(req.rawHeaders),
     body: req.rawBody,
     httpMethod: req.method,
     url
