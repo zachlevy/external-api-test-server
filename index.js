@@ -16,12 +16,16 @@ function rawBodyMiddleware(req, res, next) {
   next();
 }
 
+// allow req.protocol to be received correctly through heroku proxy
+// https://stackoverflow.com/questions/40459511/in-express-js-req-protocol-is-not-picking-up-https-for-my-secure-link-it-alwa
+app.enable('trust proxy');
+
 app.use(rawBodyMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 function getDebugRequest(req) {
-  const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+  const url = new URL(`${req.secure ? 'https' : 'http'}://${req.get('host')}${req.originalUrl}`);
   return {
     headers: req.rawHeaders,
     body: req.rawBody,
