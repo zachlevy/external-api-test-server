@@ -37,6 +37,7 @@ function getHeaderTuples(rawHeaders) {
     }
     headerTuples[headerTupleIndex].push(rawHeader);
   });
+  return headerTuples;
 }
 
 function getDebugRequest(req) {
