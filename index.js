@@ -79,6 +79,7 @@ app.all('/responses/none', (/* req, res */) => {
 });
 
 app.all('/responses/long', (req, res) => {
+  const startedAt = new Date();
   let duration = 10 * 1000; // 10 seconds
   console.log({
     'req.body': req.body
@@ -87,7 +88,13 @@ app.all('/responses/long', (req, res) => {
     duration = req.body.duration;
   }
   setTimeout(() => {
-    res.status(200).send();
+    const responseBody = {
+      response: {
+        duration: Date.now() - startedAt.getTime()
+      },
+      request: getDebugRequest(req)
+    };
+    res.status(200).send(responseBody);
   }, duration);
 });
 
@@ -105,7 +112,10 @@ app.all('/responses/redirects/:redirectCount', (req, res) => {
       return;
     }
   }
-  res.status(200).send();
+  const responseBody = {
+    request: getDebugRequest(req)
+  };
+  res.status(200).send(responseBody);
 });
 
 app.all('/responses/file-download', (req, res) => {
