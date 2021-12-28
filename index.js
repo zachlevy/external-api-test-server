@@ -55,6 +55,10 @@ app.get('/', (req, res) => {
   res.status(200).send(content);
 });
 
+app.all('/responses/empty', (req, res) => {
+  res.status(200).send();
+});
+
 app.all('/responses/status-code/:statusCode.json', (req, res) => {
   const responseBody = {
     request: getDebugRequest(req)
