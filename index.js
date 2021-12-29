@@ -145,6 +145,15 @@ app.all('/responses/redirects/:redirectCount', (req, res) => {
   res.status(200).send(responseBody);
 });
 
+app.all('/responses/headers/set-cookies', (req, res) => {
+  res.cookie('cookieOneName', 'cookieOneValue', { maxAge: 86400 * 1000, httpOnly: true });
+  res.cookie('cookieTwoName', 'cookieTwoValue', { maxAge: 86400 * 1000, httpOnly: true });
+  const responseBody = {
+    request: getDebugRequest(req)
+  };
+  res.status(200).send(responseBody);
+});
+
 app.all('/responses/file-download', (req, res) => {
   res.status(200).download('files/sample.png');
 });
