@@ -104,6 +104,31 @@ app.all('/responses/socket-hangup', (req, res) => {
   res.destroy();
 });
 
+// used for retry responses
+const remainingRetryCountByRetryKey = {};
+
+// the route with a retry key needs to be called multiple times for a success responses
+app.all('/responses/retries/:retryKey/count/:retryCount', (req, res) => {
+  const initialRetryCount = parseInt(req.params.retryCount);
+  const retryKey = req.params.retryKey;
+
+  if (!remainingRetryCountByRetryKey.hasOwnProperty(retryKey)) {
+    remainingRetryCountByRetryKey[retryKey] = initialRetryCount;
+  }
+
+  if (remainingRetryCountByRetryKey[retryKey] > 0) {
+    remainingRetryCountByRetryKey[retryKey] = remainingRetryCountByRetryKey[retryKey] - 1;
+    res.write('retry request');
+    res.destroy();
+    return;
+  }
+
+  const responseBody = {
+    request: getDebugRequest(req)
+  };
+  res.status(200).send(responseBody);
+});
+
 app.all('/responses/redirects/:redirectCount', (req, res) => {
   if (req.params.redirectCount) {
     const parsedRedirectCount = parseInt(req.params.redirectCount);
