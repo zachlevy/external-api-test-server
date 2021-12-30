@@ -85,6 +85,9 @@ app.all('/responses/none', (/* req, res */) => {
 app.all('/responses/long', (req, res) => {
   const startedAt = new Date();
   let duration = 10 * 1000; // 10 seconds
+  if (req.query?.duration) {
+    duration = parseInt(req.query.duration);
+  }
   if (req.body && req.body.duration) {
     duration = req.body.duration;
   }
