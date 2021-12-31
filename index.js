@@ -5,6 +5,10 @@ const xmlConvert = require('xml-js');
 const app = express();
 const port = process.env.PORT || 6000;
 
+// reverse proxies on prebuilt production environments like heroku, nginx, cloudflare have timeouts
+// afterwards they respond with a 5xx status and HTML
+const maxReverseProxyTimeout = process.env.MAX_REVERSE_PROXY_TIMEOUT_MS || 30 * 1000;
+
 function rawBodyMiddleware(req, res, next) {
   req.rawBody = null;
   req.on('data', function(chunk) {
@@ -91,6 +95,9 @@ app.all('/responses/long', (req, res) => {
   if (req.body && req.body.duration) {
     duration = req.body.duration;
   }
+
+  // timeout 1s before the max timeout, or when specified
+  duration = Math.max(0, Math.min(duration, maxReverseProxyTimeout - 1000));
   setTimeout(() => {
     const responseBody = {
       response: {
