@@ -7,7 +7,10 @@ const port = process.env.PORT || 6000;
 
 // reverse proxies on prebuilt production environments like heroku, nginx, cloudflare have timeouts
 // afterwards they respond with a 5xx status and HTML
-const maxReverseProxyTimeout = process.env.MAX_REVERSE_PROXY_TIMEOUT_MS || 30 * 1000;
+let maxReverseProxyTimeout = 30 * 1000;
+if (process.env.MAX_REVERSE_PROXY_TIMEOUT_MS) {
+  maxReverseProxyTimeout = parseInt(process.env.MAX_REVERSE_PROXY_TIMEOUT_MS);
+}
 
 function rawBodyMiddleware(req, res, next) {
   req.rawBody = null;
