@@ -221,6 +221,36 @@ app.post('/payments', (req, res) => {
   });
 });
 
+app.post('/payments/:paymentId/refunds', (req, res) => {
+  const paymentId = req.params.paymentId;
+
+  const checksum = getChecksumIntegerString(paymentId);
+  const amount = parseInt(checksum.slice(0, 4));
+  const cardNumber = checksum.slice(4, 8);
+
+  const mockPayment = {
+    id: paymentId,
+    amount,
+    cardNumber: `${'*'.repeat(12)}${cardNumber}`
+  };
+
+  const refundId = new Date().getTime().toString();
+
+  const mockRefund = {
+    id: refundId,
+    amount,
+    cardNumber
+  };
+
+  const delayDuration = 25 * 1000;
+  setTimeout(() => {
+    res.status(200).send({
+      payment: mockPayment,
+      refund: mockRefund
+    });
+  }, delayDuration);
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
