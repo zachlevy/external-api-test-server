@@ -13,9 +13,9 @@ RUN npm ci --only=production
 # Bundle app source
 COPY . .
 
+RUN npm install forever -g
+
 # expose only port
 EXPOSE 6000
 
-RUN npm install pm2 -g
-
-CMD ["pm2-runtime", "index.js"]
+CMD ["forever", "index.js"]
