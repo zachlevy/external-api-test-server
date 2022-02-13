@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const express = require('express');
 const fs = require('fs');
 const lodash = require('lodash');
@@ -169,6 +170,55 @@ app.all('/responses/headers/set-cookies', (req, res) => {
 
 app.all('/responses/file-download', (req, res) => {
   res.status(200).download('files/sample.png');
+});
+
+
+
+// a function to help simulate a database
+function getChecksumIntegerString(sourceString) {
+  const checksumHex = crypto
+      .createHash('md5')
+      .update(sourceString, 'utf8')
+      .digest('hex');
+  const hexRadix = 16;
+  const checksumInteger = parseInt(checksumHex, hexRadix);
+  // create a 16 digit long string of integers
+  return (checksumInteger % 10000000000000000).toString();
+}
+
+// endpoints to use as marketing or api documentation test endpoints to illustrate idempotency
+app.get('/payments/:paymentId', (req, res) => {
+  const paymentId = req.params.paymentId;
+
+  const checksum = getChecksumIntegerString(paymentId);
+  const amount = parseInt(checksum.slice(0, 4));
+  const cardNumber = checksum.slice(4, 8);
+
+  const mockPayment = {
+    id: paymentId,
+    amount,
+    cardNumber: `${'*'.repeat(12)}${cardNumber}`
+  };
+  res.status(200).send({
+    payment: mockPayment
+  });
+});
+
+app.post('/payments', (req, res) => {
+  const paymentId = new Date().getTime().toString();
+  const checksum = getChecksumIntegerString(paymentId);
+  const amount = parseInt(checksum.slice(0, 4));
+  const cardNumber = checksum.slice(4, 8);
+
+  const mockPayment = {
+    id: paymentId,
+    amount,
+    cardNumber: `${'*'.repeat(12)}${cardNumber}`
+  };
+
+  res.status(201).send({
+    payment: mockPayment
+  });
 });
 
 app.listen(port, () => {
